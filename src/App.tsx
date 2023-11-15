@@ -9,7 +9,8 @@ import Estadisticas from "./components/Estadisticas";
 import useTable from "./hook/useTable";
 
 function App() {
-  const { matriz, setValorEnPosicion } = useTable();
+  const { matriz, setValorEnPosicion, verfiryShowModal, seleccionWord, verificarPalabra } = useTable();
+
   const [modalShowIntruccion, setModalShowIntruccion] = useState<boolean>(
     Boolean(!localStorage.getItem("modalShowIntruccion"))
   );
@@ -17,20 +18,32 @@ function App() {
     useState<boolean>(false);
 
   const handleKeyPress = (letter: string) => {
-    setValorEnPosicion(letter);
+    if (!modalShowEstadisticas) {
+      setValorEnPosicion(letter);
+      if (verfiryShowModal()) {
+        verificarPalabra()
+        setModalShowEstadisticas(true)
+        // seleccionWord()
+      }
+    }
   };
   
   useEffect(() => {
     const pressKey = (e: KeyboardEvent) => {
-      if (/^[a-zA-Z]$/.test(e.key)) {
+      if (/^[a-zA-Z]$/.test(e.key) && !modalShowEstadisticas) {
         setValorEnPosicion(e.key);
+        if (verfiryShowModal()) {
+          verificarPalabra()
+          setModalShowEstadisticas(true)
+          // seleccionWord()
+        }
       }
     };
     document.addEventListener("keypress", pressKey);
     return () => {
       document.removeEventListener("keypress", pressKey);
     }
-  }, [setValorEnPosicion])  ;
+  }, [setValorEnPosicion,verfiryShowModal, seleccionWord, modalShowEstadisticas, verificarPalabra])  ;
 
   return (
     <NextUIProvider>
