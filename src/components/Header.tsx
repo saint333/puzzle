@@ -29,11 +29,11 @@ export default function Header({setModalShowIntruccion, setModalShowEstadisticas
   }, [theme])
   
   return (
-    <header className='flex justify-between py-[20px] px-[16px] bg-[#F3F3F3] rounded-[15px] w-full items-center'>
-      <InstruccionesIcon className="cursor-pointer" onClick={() => setModalShowIntruccion(true)}/>
-      <h1 className="text-[#202537] text-[40px] font-bold">WORDLE</h1>
+    <header className='flex justify-between py-[20px] px-[16px] bg-[#F3F3F3] rounded-[15px] w-full items-center dark:bg-[#dadce008]'>
+      <InstruccionesIcon className="cursor-pointer dark:text-white" onClick={() => setModalShowIntruccion(true)}/>
+      <h1 className="text-[#202537] text-[40px] font-bold dark:text-white">WORDLE</h1>
       <div className='flex gap-1'>
-        <EstadisticasIcon className="cursor-pointer" onClick={() => setModalShowEstadisticas(true)}/>
+        <EstadisticasIcon className="cursor-pointer dark:text-white" onClick={() => setModalShowEstadisticas(true)}/>
         <Switch
           size='lg'
           color='success'

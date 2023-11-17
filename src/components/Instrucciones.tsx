@@ -9,17 +9,17 @@ export default function Instrucciones({
 }: ProspInstrucciones) {
   return (
     <div
-      className='relative z-10'
+      className='absolute z-10'
       aria-labelledby='modal-title'
       role='dialog'
       aria-modal='true'
     >
-      <div className='fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity'></div>
+      <div className='fixed inset-0 transition-opacity bg-[#F3F3F3E3] dark:bg-[#262B3CE3]'></div>
 
       <div className='fixed inset-0 z-10 w-screen overflow-y-auto'>
         <div className='flex min-h-full items-center justify-center p-4 text-center'>
-          <div className='relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all  sm:w-full sm:max-w-[35rem]'>
-            <div className='bg-white py-5 px-10'>
+          <div className='relative transform overflow-hidden rounded-lg bg-white text-left shadow-2xl transition-all  sm:w-full sm:max-w-[35rem] dark:border dark:bg-[#262B3C] dark:border-[#939B9F]'>
+            <div className='py-5 px-10'>
               <h2 className='text-[35px] text-center font-bold'>Cómo jugar</h2>
               <p className='text-[19px] font-[400] mt-4 mb-3'>
                 Adivina la palabra oculta en cinco intentos. <br />
@@ -40,7 +40,7 @@ export default function Instrucciones({
                       size='lg'
                       text={letter}
                       style={{
-                        backgroundColor: index === 0 ? "green" : "white",
+                        backgroundColor: index === 0 ? "#6AAA64" : "inherit",
                         border: index != 0 ? "1px solid #000" : "",
                       }}
                     />
@@ -59,7 +59,7 @@ export default function Instrucciones({
                       size='lg'
                       text={letter}
                       style={{
-                        backgroundColor: index === 2 ? "yellow" : "white",
+                        backgroundColor: index === 2 ? "#CEB02C" : "inherit",
                         border: index != 2 ? "1px solid #000" : "",
                       }}
                     />
@@ -78,7 +78,7 @@ export default function Instrucciones({
                       size='lg'
                       text={letter}
                       style={{
-                        backgroundColor: index === 4 ? "#939B9F" : "white",
+                        backgroundColor: index === 4 ? "#939B9F" : "inherit",
                         border: index != 4 ? "1px solid #000" : "",
                       }}
                     />
@@ -99,7 +99,7 @@ export default function Instrucciones({
             <div className='px-4 py-3 text-center'>
               <button
                 type='button'
-                className='inline-flex justify-center rounded-md bg-success-400 px-3 py-2 text-[28px] font-semibold text-white shadow-sm'
+                className='inline-flex justify-center rounded-md bg-[#6AAA64] px-3 py-2 text-[28px] font-semibold text-white shadow-sm w-[200px]'
                 onClick={() => {
                   setModalShowIntruccion(false);
                   localStorage.setItem("modalShowIntruccion", "false");

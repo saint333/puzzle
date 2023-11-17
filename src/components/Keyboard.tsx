@@ -26,7 +26,7 @@ export default function Keyboard({handleKeyPress}: {handleKeyPress: (letter : st
   const [color] = useState("#D3D6DA");
 
   return (
-    <div className='bg-[#DADCE04D] rounded-[15px] py-[33px] px-[10px] w-full '>
+    <div className='bg-[#DADCE04D] rounded-[15px] py-[33px] px-[10px] w-full dark:bg-[#DADCE008]'>
       <KeyboardRow
         keys={["q", "w", "e", "r", "t", "y", "u", "i", "o", "p"]}
         onClick={handleKeyPress}
@@ -40,7 +40,7 @@ export default function Keyboard({handleKeyPress}: {handleKeyPress: (letter : st
         style='flex justify-center gap-[10px] ml-10 mt-2'
       />
       <KeyboardRow
-        keys={["enter", "z", "x", "c", "v", "b", "n", "m", "delete"]}
+        keys={[ "z", "x", "c", "v", "b", "n", "m"]}
         onClick={handleKeyPress}
         color={color}
         style='flex justify-center gap-[10px] mr-10 mt-2'

@@ -15,14 +15,14 @@ export default function Cubo({
     <>
       {size === "sm" ? (
         <span
-          className={`w-[45px] h-[51px] rounded-[5px] flex text-[18px] cursor-pointer justify-center items-center capitalize`}
+          className={`w-[45px] h-[51px] rounded-[5px] flex text-[18px] cursor-pointer justify-center items-center capitalize dark:bg-[#565F7E!important] font-semibold`}
           {...args}
         >
           {verifyText}
         </span>
       ) : (
         <span
-          className={`w-[75px] h-[75px] rounded-[5px] flex text-[35px] cursor-pointer justify-center items-center capitalize`}
+          className={`w-[75px] h-[75px] rounded-[5px] flex text-[35px] cursor-pointer justify-center items-center capitalize dark:bg-[#565F7E] font-semibold`}
           {...args}
         >
           {verifyText}
