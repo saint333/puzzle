@@ -1,10 +1,19 @@
 type ProspEstadisticas = {
   setModalShowEstadisticas: React.Dispatch<React.SetStateAction<boolean>>;
+  punto: number,
+  victoria: number
+  second: number,
+  minute : number,
 };
 
 export default function Estadisticas({
   setModalShowEstadisticas,
+  punto,
+  victoria,
+  second,
+  minute,
 }: ProspEstadisticas) {
+  
   return (
     <div
       className='relative z-10'
@@ -21,18 +30,18 @@ export default function Estadisticas({
               <h2 className='text-[35px] text-center font-bold'>Estadísticas</h2>
               <div className='flex justify-between items-center w-full sm:w-[80%] mx-auto my-6'>
                 <div className="flex flex-col gap-3 items-center">
-                  <span className="text-[35px] font-bold">2</span>
+                  <span className="text-[35px] font-bold">{punto}</span>
                   <p className="text-[21px] font-normal">Jugadas</p>
                 </div>
                 <div className="flex flex-col gap-3 items-center">
-                  <span className="text-[35px] font-bold">2</span>
+                  <span className="text-[35px] font-bold">{victoria}</span>
                   <p className="text-[21px] font-normal">Victorias</p>
                 </div>
               </div>
               <p className="text-center text-[19px] font-normal">
               SIGUIENTE PALABRA
               </p>
-              <p className="text-[24px] text-center"><strong>04:10</strong></p>
+              <p className="text-[24px] text-center"><strong>0{minute}:{second < 10 ? `0${second}`: second}</strong></p>
             </div>
             <div className='px-4 py-3 text-center'>
               <button

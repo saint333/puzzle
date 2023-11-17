@@ -9,7 +9,15 @@ import Estadisticas from "./components/Estadisticas";
 import useTable from "./hook/useTable";
 
 function App() {
-  const { matriz, setValorEnPosicion, verfiryShowModal, seleccionWord, verificarPalabra } = useTable();
+  const {
+    matriz,
+    palabra,
+    position,
+    setValorEnPosicion,
+    verfiryShowModal,
+    seleccionWord,
+    verificarPalabra,
+  } = useTable();
 
   const [modalShowIntruccion, setModalShowIntruccion] = useState<boolean>(
     Boolean(!localStorage.getItem("modalShowIntruccion"))
@@ -17,33 +25,77 @@ function App() {
   const [modalShowEstadisticas, setModalShowEstadisticas] =
     useState<boolean>(false);
 
+  const [punto, setPunto] = useState(0);
+  const [victoria, setVictoria] = useState(0);
+  const [minute, setMinute] = useState(1)
+  const [second, setSecond] = useState(0)
+
   const handleKeyPress = (letter: string) => {
     if (!modalShowEstadisticas) {
       setValorEnPosicion(letter);
       if (verfiryShowModal()) {
-        verificarPalabra()
-        setModalShowEstadisticas(true)
+        setModalShowEstadisticas(true);
         // seleccionWord()
       }
     }
   };
-  
+
   useEffect(() => {
-    const pressKey = (e: KeyboardEvent) => {
+    const pressKey = async (e: KeyboardEvent) => {
       if (/^[a-zA-Z]$/.test(e.key) && !modalShowEstadisticas) {
         setValorEnPosicion(e.key);
         if (verfiryShowModal()) {
-          verificarPalabra()
-          setModalShowEstadisticas(true)
-          // seleccionWord()
+          await verificarPalabra();
+          if (matriz[position[0]].map((e) => e.letter).join("") == palabra) {
+            setVictoria((prev) => {
+              const jugar = prev + 1;
+              return jugar;
+            });
+          }
+          setPunto((prev) => {
+            const jugar = prev + 1;
+            return jugar;
+          });
+
+          setModalShowEstadisticas(true);
         }
       }
     };
     document.addEventListener("keypress", pressKey);
+    const time = setInterval(() => {
+      if (second === 0 && minute === 0) {
+        seleccionWord()
+        setMinute(5)
+        setSecond(5)
+      }
+      if (second == 0) {
+        setSecond(60)
+        setMinute(prev => {
+          const actual = prev - 1
+          return actual
+        })
+      }
+      setSecond(prev => {
+        const actual = prev - 1
+        return actual
+      })
+    }, 1000)
     return () => {
+      clearInterval(time);
       document.removeEventListener("keypress", pressKey);
-    }
-  }, [setValorEnPosicion,verfiryShowModal, seleccionWord, modalShowEstadisticas, verificarPalabra])  ;
+    };
+  }, [
+    setValorEnPosicion,
+    verfiryShowModal,
+    seleccionWord,
+    modalShowEstadisticas,
+    verificarPalabra,
+    palabra,
+    matriz,
+    position,
+    minute,
+    second
+  ]);
 
   return (
     <NextUIProvider>
@@ -54,22 +106,28 @@ function App() {
         />
         <div className='grid grid-cols-5 grid-rows-5 gap-[11px]'>
           {matriz.map((fila, pos) =>
-              fila.map((col, index) => (
-                <Cubo
-                  key={pos + index}
-                  size='lg'
-                  text={col.letter}
-                  style={{ backgroundColor: col.color }}
-                />
-              ))
-            )}
+            fila.map((col, index) => (
+              <Cubo
+                key={pos + index}
+                size='lg'
+                text={col.letter}
+                style={{ backgroundColor: col.color }}
+              />
+            ))
+          )}
         </div>
         <Keyboard handleKeyPress={handleKeyPress} />
         {modalShowIntruccion && (
           <Instrucciones setModalShowIntruccion={setModalShowIntruccion} />
         )}
         {modalShowEstadisticas && (
-          <Estadisticas setModalShowEstadisticas={setModalShowEstadisticas} />
+          <Estadisticas
+            setModalShowEstadisticas={setModalShowEstadisticas}
+            punto={punto}
+            victoria={victoria}
+            second={second}
+            minute={minute}
+          />
         )}
       </main>
     </NextUIProvider>

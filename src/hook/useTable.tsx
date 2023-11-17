@@ -21,15 +21,12 @@ export default function useTable() {
     fetch("http://localhost:5173/src/assets/words.txt")
       .then((response) => response.text())
       .then((response) => {
-        setWords(
-          response
-            .split("\n")
-            .filter((line) => line.length === 5 && /^[a-zA-Z]+$/.test(line))
-        );
+        const conten = response
+          .split("\n")
+          .filter((line) => line.length === 5 && /^[a-zA-Z]+$/.test(line));
+        setWords(conten);
         setPalabra(
-          response
-            .split("\n")
-            .filter((line) => line.length === 5 && /^[a-zA-Z]+$/.test(line))[0]
+          conten[Math.floor(Math.random() * conten.length)]
         );
       });
   }, []);
@@ -39,9 +36,11 @@ export default function useTable() {
     const palabraSeleccionada = words[index];
     setPalabra(palabraSeleccionada);
     setWords((prev) => prev.filter((word) => word != palabraSeleccionada));
+    setMatriz(matrizInicial)
+    setPosition([0, 0]);
   };
 
-  const verificarPalabra = () => {
+  const verificarPalabra = async () => {
     setMatriz((prevMatriz) => {
       const nuevaMatriz = [...prevMatriz];
       const word = [...prevMatriz[position[0]]];
@@ -63,6 +62,7 @@ export default function useTable() {
       nuevaMatriz[position[0]] = wordle;
       return nuevaMatriz;
     });
+    await new Promise((resolve) => resolve(setTimeout(() => {}, 1000)));
   };
 
   const verfiryShowModal = (): boolean => {
@@ -98,6 +98,8 @@ export default function useTable() {
 
   return {
     matriz,
+    palabra,
+    position,
     setValorEnPosicion,
     verfiryShowModal,
     seleccionWord,
