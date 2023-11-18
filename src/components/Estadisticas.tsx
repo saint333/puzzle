@@ -1,5 +1,7 @@
+import { useStateProvider } from "../context/StateProvider";
+import { ReducerCases } from "../context/StateReducers";
+
 type ProspEstadisticas = {
-  setModalShowEstadisticas: React.Dispatch<React.SetStateAction<boolean>>;
   punto: number,
   victoria: number
   second: number,
@@ -9,7 +11,6 @@ type ProspEstadisticas = {
 };
 
 export default function Estadisticas({
-  setModalShowEstadisticas,
   punto,
   victoria,
   second,
@@ -17,7 +18,7 @@ export default function Estadisticas({
   palabra,
   showPalabra
 }: ProspEstadisticas) {
-  
+  const {dispatch} = useStateProvider()
   return (
     <div
       className='absolute z-10'
@@ -53,7 +54,7 @@ export default function Estadisticas({
                 type='button'
                 className='inline-flex justify-center rounded-md bg-[#6AAA64] px-10 py-2 text-[28px] font-semibold text-white shadow-sm'
                 onClick={() => {
-                  setModalShowEstadisticas(false);
+                  dispatch({type: ReducerCases.SHOW_MODAL_STATISTICS});
                 }}
               >
                 Aceptar

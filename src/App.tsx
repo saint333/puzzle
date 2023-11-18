@@ -7,6 +7,8 @@ import { useState, useEffect, useCallback } from "react";
 import Instrucciones from "./components/Instrucciones";
 import Estadisticas from "./components/Estadisticas";
 import useTable from "./hook/useTable";
+import { useStateProvider } from "./context/StateProvider";
+import { ReducerCases } from "./context/StateReducers";
 
 function App() {
   const {
@@ -19,11 +21,11 @@ function App() {
     verificarPalabra,
   } = useTable();
 
+  const {state, dispatch} = useStateProvider()
+
   const [modalShowIntruccion, setModalShowIntruccion] = useState<boolean>(
     Boolean(!localStorage.getItem("modalShowIntruccion"))
   );
-  const [modalShowEstadisticas, setModalShowEstadisticas] =
-    useState<boolean>(false);
 
   const [punto, setPunto] = useState(0);
   const [victoria, setVictoria] = useState(0);
@@ -39,7 +41,7 @@ function App() {
     async (e: string) => {
       if (
         /^[a-zA-Z]$/.test(e) &&
-        !modalShowEstadisticas &&
+        !state.showModalStatistics &&
         matriz[4][4].letter === ""
       ) {
         setValorEnPosicion(e);
@@ -54,7 +56,7 @@ function App() {
               const jugar = prev + 1;
               return jugar;
             });
-            setModalShowEstadisticas(true);
+            dispatch({type: ReducerCases.SHOW_MODAL_STATISTICS})
           }
           if (position.join("") === "44") {
             setPunto((prev) => {
@@ -62,7 +64,7 @@ function App() {
               return jugar;
             });
             setShowPalabra(true);
-            setModalShowEstadisticas(true);
+            dispatch({type: ReducerCases.SHOW_MODAL_STATISTICS})
           }
         }
       }
@@ -70,11 +72,12 @@ function App() {
     [
       matriz,
       position,
-      modalShowEstadisticas,
+      dispatch,
       setValorEnPosicion,
       verfiryShowModal,
       verificarPalabra,
       palabra,
+      state
     ]
   );
 
@@ -114,7 +117,6 @@ function App() {
         <main className='w-[80%] m-auto h-[100vh] flex justify-center items-center gap-[70px] flex-col lg:w-[50%] relative'>
           <Header
             setModalShowIntruccion={setModalShowIntruccion}
-            setModalShowEstadisticas={setModalShowEstadisticas}
           />
           <div className='grid grid-cols-5 grid-rows-5 gap-[11px]'>
             {matriz.map((fila, pos) =>
@@ -132,9 +134,8 @@ function App() {
           {modalShowIntruccion && (
             <Instrucciones setModalShowIntruccion={setModalShowIntruccion} />
           )}
-          {modalShowEstadisticas && (
+          {state.showModalStatistics && (
             <Estadisticas
-              setModalShowEstadisticas={setModalShowEstadisticas}
               punto={punto}
               victoria={victoria}
               second={second}

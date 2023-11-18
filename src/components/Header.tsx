@@ -4,27 +4,26 @@ import { MoonIcon } from "../utils/MoonIcon";
 import EstadisticasIcon from "../utils/EstadisticasIcon";
 import InstruccionesIcon from "../utils/InstruccionesIcon";
 import { useState, useEffect } from "react";
+import { useStateProvider } from "../context/StateProvider";
+import { ReducerCases } from "../context/StateReducers";
 
 type ProspHeader = {
   setModalShowIntruccion: React.Dispatch<React.SetStateAction<boolean>>,
-  setModalShowEstadisticas: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-export default function Header({setModalShowIntruccion, setModalShowEstadisticas}: ProspHeader) {
+export default function Header({setModalShowIntruccion}: ProspHeader) {
+  const {dispatch} = useStateProvider()
   const [theme, setTheme] = useState(() => {
-    if (window.matchMedia('(prefers-color-scheme: dark)')) {
+    if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
       return true
     }
     return false
   })
-  useEffect(() => { 
+  useEffect(() => {
     if (theme) {
-      document.querySelector("html")?.classList.remove("dark")
-    } else {
       document.querySelector("html")?.classList.add("dark")
-    }
-    return () => {
-      
+    } else {
+      document.querySelector("html")?.classList.remove("dark")
     }
   }, [theme])
   
@@ -33,7 +32,7 @@ export default function Header({setModalShowIntruccion, setModalShowEstadisticas
       <InstruccionesIcon className="cursor-pointer dark:text-white" onClick={() => setModalShowIntruccion(true)}/>
       <h1 className="text-[#202537] text-[40px] font-bold dark:text-white">WORDLE</h1>
       <div className='flex gap-1'>
-        <EstadisticasIcon className="cursor-pointer dark:text-white" onClick={() => setModalShowEstadisticas(true)}/>
+        <EstadisticasIcon className="cursor-pointer dark:text-white" onClick={() => dispatch({type: ReducerCases.SHOW_MODAL_STATISTICS})}/>
         <Switch
           size='lg'
           color='success'
@@ -44,7 +43,7 @@ export default function Header({setModalShowIntruccion, setModalShowEstadisticas
               <MoonIcon className={className} />
             )
           }
-          isSelected={theme} onValueChange={setTheme}
+          isSelected={!theme} onValueChange={() => setTheme(!theme)}
         />
       </div>
     </header>
