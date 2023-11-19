@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 export default function useTable() {
   const matrizInicial = Array.from({ length: 5 }, () =>
     Array(5).fill({ color: "rgba(147, 155, 159, 0.30)", letter: "" })
@@ -17,20 +17,6 @@ export default function useTable() {
     [4, 4],
   ];
 
-  useEffect(() => {
-    fetch("http://localhost:5173/src/assets/words.txt")
-      .then((response) => response.text())
-      .then((response) => {
-        const conten = response
-          .split("\n")
-          .filter((line) => line.length === 5 && /^[a-zA-Z]+$/.test(line));
-        setWords(conten);
-        setPalabra(
-          conten[Math.floor(Math.random() * conten.length)]
-        );
-      });
-  }, []);
-
   const seleccionWord = () => {
     const index = Math.floor(Math.random() * words?.length);
     const palabraSeleccionada = words[index];
@@ -45,8 +31,8 @@ export default function useTable() {
       const nuevaMatriz = [...prevMatriz];
       const word = [...prevMatriz[position[0]]];
       const wordle = word.map((word, index) => {
-        let color = "rgba(147, 155, 159, 0.30)";
         const letter = word.letter;
+        let color = "rgba(147, 155, 159, 0.30)";
         if (palabra.charAt(index) === letter) {
           color = "green";
         } else if (palabra.includes(letter)) {

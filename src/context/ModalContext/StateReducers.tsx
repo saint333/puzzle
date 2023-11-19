@@ -10,7 +10,7 @@ export type State = {
 
 export const initialState: State = {
   showModalStatistics: false,
-  showModalInstructions: true,
+  showModalInstructions: Boolean(!localStorage.getItem("modalShowIntruccion")),
 };
 
 export type Action = {

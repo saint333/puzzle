@@ -1,12 +1,9 @@
+import { useStateProvider } from "../context/ModalContext/StateProvider";
+import { ReducerCases } from "../context/ModalContext/StateReducers";
 import Cubo from "../utils/Cubo";
 
-type ProspInstrucciones = {
-  setModalShowIntruccion: React.Dispatch<React.SetStateAction<boolean>>;
-};
-
-export default function Instrucciones({
-  setModalShowIntruccion,
-}: ProspInstrucciones) {
+export default function Instrucciones() {
+  const {dispatch} = useStateProvider()
   return (
     <div
       className='absolute z-10'
@@ -101,7 +98,7 @@ export default function Instrucciones({
                 type='button'
                 className='inline-flex justify-center rounded-md bg-[#6AAA64] px-3 py-2 text-[28px] font-semibold text-white shadow-sm w-[200px]'
                 onClick={() => {
-                  setModalShowIntruccion(false);
+                  dispatch({type: ReducerCases.SHOW_MODAL_INSTRUCTIONS})
                   localStorage.setItem("modalShowIntruccion", "false");
                 }}
               >
