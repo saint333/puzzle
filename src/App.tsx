@@ -21,6 +21,8 @@ function App() {
       starting_board,
       starting_board_position: { x, y },
       mysterious_word,
+      minute,
+      second
     },
     dispatchPuzzle,
   } = useStatePuzzleProvider();
@@ -87,10 +89,23 @@ function App() {
       functionEventHandler(e.key);
     };
     document.addEventListener("keypress", pressKey);
+    const timer = setTimeout(() => {
+      if (second === 0 && minute === 0) {
+        dispatchPuzzle({ type: ReducerCasesPuzzle.RESET });
+        dispatchPuzzle({ type: ReducerCasesPuzzle.RESET_TIME });
+        dispatchPuzzle({ type: ReducerCasesPuzzle.SHOW_MYSTERIOUS_WORD });
+      }
+      if (second === 0) {
+        dispatchPuzzle({ type: ReducerCasesPuzzle.MINUTE });
+        dispatchPuzzle({ type: ReducerCasesPuzzle.SECOND, value_second: 59 });
+      }
+      dispatchPuzzle({ type: ReducerCasesPuzzle.SECOND });
+    }, 1000);
     return () => {
       document.removeEventListener("keypress", pressKey);
+      clearTimeout(timer);
     };
-  }, [functionEventHandler, dispatchPuzzle]);
+  }, [functionEventHandler, dispatchPuzzle, minute, second]);
 
   return (
     <NextUIProvider>

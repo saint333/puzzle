@@ -28,7 +28,6 @@ export const StatePuzzleProvider: React.FC<StateProviderProps> = ({
   children,
 }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
-  const { minute, second } = state;
 
   useEffect(() => {
     const fetchData = async () => {
@@ -59,23 +58,6 @@ export const StatePuzzleProvider: React.FC<StateProviderProps> = ({
 
     fetchData();
   }, []);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      if (second === 0 && minute === 0) {
-        dispatch({ type: ReducerCasesPuzzle.RESET });
-        dispatch({ type: ReducerCasesPuzzle.RESET_TIME });
-        dispatch({ type: ReducerCasesPuzzle.SHOW_MYSTERIOUS_WORD });
-      }
-      if (second === 0) {
-        dispatch({ type: ReducerCasesPuzzle.MINUTE });
-        dispatch({ type: ReducerCasesPuzzle.SECOND, value_second: 59 });
-      }
-      dispatch({ type: ReducerCasesPuzzle.SECOND });
-    }, 1000);
-
-    return () => clearTimeout(timer);
-  }, [minute, second]);
 
   return (
     <StatePuzzleContext.Provider
