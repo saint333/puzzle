@@ -5,6 +5,7 @@ export enum ReducerCasesPuzzle {
   ADD_LETTER_TO_BOARD = "ADD_LETTER_TO_BOARD",
   VERIFY_MYSTERIOUS_WORD = "VERIFY_MYSTERIOUS_WORD",
   SHOW_MYSTERIOUS_WORD = "SHOW_MYSTERIOUS_WORD",
+  CHANGE_BOARD_POSITION = "CHANGE_BOARD_POSITION",
   PLAYS = "PLAYS",
   VICTORIES = "VICTORIES",
   SECOND = "SECOND",
@@ -39,8 +40,8 @@ export const initialState: State = {
   show_mysterious_word: false,
   plays: 0,
   victories: 0,
-  minute: 1,
-  second: 0,
+  minute: 0,
+  second: 10,
 };
 
 export type Action = {
@@ -51,74 +52,59 @@ export type Action = {
 
 const reducer = (state: State, action: Action): State => {
   const { x, y } = state.starting_board_position;
-  const positionShowModal = [
-    [0, 4],
-    [1, 4],
-    [2, 4],
-    [3, 4],
-    [4, 4],
-  ];
-  const prevPosicion = { x: x, y: y };
-
   switch (action.type) {
     case ReducerCasesPuzzle.LIST_OF_WORDS:
       return { ...state, list_of_words: action?.value?.split(",") || [] };
     case ReducerCasesPuzzle.MYSTERIOUS_WORD:
       return { ...state, mysterious_word: action.value || "" };
-    case ReducerCasesPuzzle.SHOW_MODAL_INSTRUCTIONS:
-      return {
-        ...state,
-        show_modal_instruction: positionShowModal.some(
-          (post) =>  post[0] === state.starting_board_position.x && post[1] === state.starting_board_position.y
-        ),
-      };
-    case ReducerCasesPuzzle.ADD_LETTER_TO_BOARD:
-      console.log(x,y)
-      if (prevPosicion.y < 5) {
-        prevPosicion.y = y + 1;
+    case ReducerCasesPuzzle.CHANGE_BOARD_POSITION: {
+      let newX = x;
+      let newY = y + 1;
+      if (newY === 5) {
+        newY = 0;
+        newX = x + 1;
       }
-      if (prevPosicion.y == 5) {
-        prevPosicion.y = 0;
-        prevPosicion.x = x + 1;
-      }
-      if (prevPosicion.x === 5 && prevPosicion.y === 0) {
-        prevPosicion.x = 4;
-        prevPosicion.y = 4;
+
+      if (newX === 5 && newY === 0) {
+        newX = 4;
+        newY = 4;
       }
       return {
         ...state,
-        starting_board: state.starting_board.map((row, rowIndex) =>
-          rowIndex === x
-            ? row.map((cell, colIndex) =>
-                colIndex === y
-                  ? { letter: action.value || "", color: cell.color }
-                  : cell
-              )
-            : row
-        ),
-        show_modal_instruction: positionShowModal.some(
-          (post) =>  post[0] === state.starting_board_position.x && post[1] === state.starting_board_position.y
-        ),
-        starting_board_position: prevPosicion,
+        starting_board_position: { x: newX, y: newY },
       };
+    }
+    case ReducerCasesPuzzle.ADD_LETTER_TO_BOARD: {
+      const newStartingBoard = state.starting_board.map((row, rowIndex) =>
+        rowIndex === x
+          ? row.map((cell, colIndex) =>
+              colIndex === y
+                ? { letter: action.value || "", color: cell.color }
+                : cell
+            )
+          : row
+      );
+      return {
+        ...state,
+        starting_board: newStartingBoard,
+      };
+    }
     case ReducerCasesPuzzle.VERIFY_MYSTERIOUS_WORD:
       return {
         ...state,
         starting_board: state.starting_board.map((row, rowIndex) =>
           rowIndex === x
-            ? row.map((cell, colIndex) =>
-                colIndex === y
-                  ? {
-                      letter: cell.letter || "",
-                      color:
-                        state.mysterious_word.charAt(colIndex) === cell.letter
-                          ? "green"
-                          : state.mysterious_word.includes(cell.letter)
-                          ? "#CEB02C"
-                          : "#939B9F",
-                    }
-                  : cell
-              )
+            ? row.map((cell, colIndex) => {
+                return {
+                  letter: cell.letter || "",
+                  color:
+                    state.mysterious_word.charAt(colIndex) === cell.letter
+                      ? "green"
+                      : state.mysterious_word.includes(cell.letter)
+                      ? "#CEB02C"
+                      : "#939B9F",
+                };
+              })
             : row
         ),
       };
@@ -133,9 +119,17 @@ const reducer = (state: State, action: Action): State => {
     case ReducerCasesPuzzle.SECOND:
       return { ...state, second: action.value_second || state.second-- };
     case ReducerCasesPuzzle.RESET_TIME:
-      return { ...state, minute: 5, second: 0 };
+      return { ...state, minute: 1, second: 0 };
     case ReducerCasesPuzzle.RESET:
-      return { ...state };
+      return {
+        ...state,
+        starting_board_position: initialState.starting_board_position,
+        starting_board: initialState.starting_board,
+        mysterious_word: state.list_of_words.filter(
+          (word) => word !== state.mysterious_word
+        )[Math.floor(Math.random() * state.list_of_words.length-1)],
+        show_mysterious_word: true
+      };
     default:
       return state;
   }

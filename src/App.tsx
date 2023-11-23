@@ -3,7 +3,7 @@ import Header from "./components/Header";
 import { NextUIProvider } from "@nextui-org/react";
 import Cubo from "./utils/Cubo";
 import Keyboard from "./components/Keyboard";
-import { useEffect, useCallback } from "react";
+import { useEffect, useCallback, useMemo } from "react";
 import Instrucciones from "./components/Instrucciones";
 import Estadisticas from "./components/Estadisticas";
 import { useStateProvider } from "./context/ModalContext/StateProvider";
@@ -17,13 +17,28 @@ function App() {
     dispatch,
   } = useStateProvider();
   const {
-    puzzle: { starting_board, starting_board_position: {x, y}, show_modal_instruction, mysterious_word },
+    puzzle: {
+      starting_board,
+      starting_board_position: { x, y },
+      mysterious_word,
+    },
     dispatchPuzzle,
   } = useStatePuzzleProvider();
 
   const handleKeyPress = (letter: string) => {
     functionEventHandler(letter);
   };
+
+  const positionShowModal = useMemo(
+    () => [
+      [0, 4],
+      [1, 4],
+      [2, 4],
+      [3, 4],
+      [4, 4],
+    ],
+    []
+  );
 
   const functionEventHandler = useCallback(
     async (e: string) => {
@@ -32,12 +47,16 @@ function App() {
         !showModalStatistics &&
         starting_board[4][4].letter === ""
       ) {
-        dispatchPuzzle({type: ReducerCasesPuzzle.SHOW_MODAL_INSTRUCTIONS})
-        dispatchPuzzle({type: ReducerCasesPuzzle.ADD_LETTER_TO_BOARD, value: e})
-        dispatchPuzzle({type: ReducerCasesPuzzle.SHOW_MODAL_INSTRUCTIONS})
-        if (show_modal_instruction) {   
-          dispatchPuzzle({type: ReducerCasesPuzzle.VERIFY_MYSTERIOUS_WORD})
-          if (starting_board[x].map((e) => e.letter).join("") == mysterious_word) {
+        dispatchPuzzle({
+          type: ReducerCasesPuzzle.ADD_LETTER_TO_BOARD,
+          value: e,
+        });
+        dispatchPuzzle({ type: ReducerCasesPuzzle.SHOW_MODAL_INSTRUCTIONS });
+        if (positionShowModal.some((post) => post[0] === x && post[1] === y)) {
+          dispatchPuzzle({ type: ReducerCasesPuzzle.VERIFY_MYSTERIOUS_WORD });
+          if (
+            starting_board[x].map((e) => e.letter).join("") == mysterious_word
+          ) {
             dispatchPuzzle({ type: ReducerCasesPuzzle.PLAYS });
             dispatchPuzzle({ type: ReducerCasesPuzzle.VICTORIES });
             dispatch({ type: ReducerCases.SHOW_MODAL_STATISTICS });
@@ -48,6 +67,7 @@ function App() {
             dispatch({ type: ReducerCases.SHOW_MODAL_STATISTICS });
           }
         }
+        dispatchPuzzle({ type: ReducerCasesPuzzle.CHANGE_BOARD_POSITION });
       }
     },
     [
@@ -58,7 +78,7 @@ function App() {
       starting_board,
       x,
       y,
-      show_modal_instruction
+      positionShowModal,
     ]
   );
 
