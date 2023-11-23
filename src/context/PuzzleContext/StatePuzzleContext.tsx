@@ -32,7 +32,7 @@ export const StatePuzzleProvider: React.FC<StateProviderProps> = ({
 
   useEffect(() => {
     const fetchData = async () => {
-      const url = '/words.txt'
+      const url = 'https://puzzle-wordle.netlify.app/words.txt'
       try {
         const response = await fetch(url);
         const words = await response.text();
