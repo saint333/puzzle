@@ -32,10 +32,9 @@ export const StatePuzzleProvider: React.FC<StateProviderProps> = ({
 
   useEffect(() => {
     const fetchData = async () => {
+      const url = '/public/words.txt'
       try {
-        const response = await fetch(
-          "http://localhost:5173/src/assets/words.txt"
-        );
+        const response = await fetch(url);
         const words = await response.text();
         const filteredWords = words
           .split("\n")
